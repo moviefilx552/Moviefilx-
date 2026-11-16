@@ -1,0 +1,660 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Moviefilx — saath mein dekho</title>
+<style>
+:root{--bg:#07070c;--panel:#12121b;--panel2:#1b1b29;--tx:#f3f3f7;--mut:#9a9ab0;--a:#ff3d71;--b:#ff9f1c;--r:14px}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+body{background:radial-gradient(1200px 600px at 80% -10%,#2a0f3a55,transparent),radial-gradient(900px 500px at -10% 30%,#0f2a4a44,transparent),var(--bg);color:var(--tx);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow-x:hidden;min-height:100vh}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+input{font:inherit;color:inherit}
+kbd{background:#ffffff18;border-radius:5px;padding:0 6px;font-size:12px;color:var(--mut)}
+
+/* header */
+header{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;padding:12px 4vw;background:linear-gradient(#07070cee,#07070c99);backdrop-filter:blur(14px)}
+.logo{font-weight:800;font-size:22px;letter-spacing:-.5px;text-decoration:none;color:var(--tx)}
+.logo b{background:linear-gradient(90deg,var(--a),var(--b));-webkit-background-clip:text;background-clip:text;color:transparent}
+nav{display:flex;gap:4px;overflow-x:auto;order:3;width:100%}
+nav button{padding:6px 12px;border-radius:99px;color:var(--mut);white-space:nowrap;font-size:14px}
+nav button:hover,nav button.on{background:#ffffff14;color:var(--tx)}
+.search{position:relative;flex:1;min-width:180px;max-width:560px;display:flex;align-items:center;background:#ffffff12;border:1px solid #ffffff18;border-radius:99px;padding:0 10px 0 16px;margin-left:auto}
+.search:focus-within{border-color:var(--a);box-shadow:0 0 0 3px #ff3d7133}
+.search input{flex:1;background:none;border:0;outline:0;padding:10px 6px;min-width:0}
+#mic{padding:4px 6px}
+#sugg{position:absolute;top:calc(100% + 8px);left:0;right:0;background:var(--panel);border:1px solid #ffffff18;border-radius:var(--r);overflow:hidden;box-shadow:0 20px 50px #000a}
+#sugg .it{display:flex;gap:12px;align-items:center;padding:10px 14px;cursor:pointer}
+#sugg .it:hover,#sugg .it.sel{background:#ffffff12}
+#sugg .th{width:34px;height:48px;border-radius:6px;flex:none;background-size:cover;display:grid;place-items:center;font-size:20px}
+#sugg small{color:var(--mut);display:block}
+#sugg .parsed{padding:8px 14px;font-size:12px;color:var(--b);border-bottom:1px solid #ffffff12}
+.ib{width:38px;height:38px;border-radius:50%;background:#ffffff1c;backdrop-filter:blur(6px);display:grid;place-items:center;font-size:15px;transition:.2s}
+.ib:hover{background:var(--a);transform:scale(1.1)}
+
+/* hero */
+#hero{position:relative;min-height:78vh;display:flex;align-items:flex-end;overflow:hidden}
+.hbg{position:absolute;inset:0;background-size:cover;background-position:center;transition:opacity .6s;animation:kb 18s ease-in-out infinite alternate}
+@keyframes kb{from{transform:scale(1)}to{transform:scale(1.08)}}
+.hshade{position:absolute;inset:0;background:linear-gradient(0deg,var(--bg) 4%,transparent 55%),linear-gradient(90deg,#07070cdd 0%,transparent 65%)}
+.hemoji{position:absolute;right:6vw;top:22%;font-size:clamp(120px,22vw,300px);opacity:.18;filter:blur(2px);pointer-events:none}
+.hc{position:relative;padding:0 4vw 64px;max-width:760px;animation:up .7s both}
+@keyframes up{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+.tag{display:inline-block;background:linear-gradient(90deg,var(--a),var(--b));color:#000;font-weight:700;font-size:12px;padding:3px 10px;border-radius:99px}
+.hc h1{font-size:clamp(34px,7vw,72px);line-height:1.02;letter-spacing:-1.5px;margin:12px 0 8px;text-shadow:0 4px 30px #0009}
+.meta{color:#d0d0e0;font-size:14px}
+.desc{margin:12px 0 20px;color:#dcdce8;max-width:560px}
+.hb{display:flex;gap:10px;flex-wrap:wrap}
+.btn{padding:11px 20px;border-radius:99px;background:#ffffff1f;backdrop-filter:blur(8px);font-weight:600;transition:.2s;border:1px solid #ffffff18}
+.btn:hover{background:#ffffff33;transform:translateY(-2px)}
+.btn.pri{background:linear-gradient(90deg,var(--a),var(--b));color:#000;border:0}
+.btn.pri:hover{box-shadow:0 8px 30px #ff3d7166}
+.dots{display:flex;gap:6px;margin-top:22px}
+.dots i{width:22px;height:4px;border-radius:9px;background:#ffffff33;cursor:pointer}
+.dots i.on{background:var(--a);width:36px}
+
+/* filters */
+.filters{padding:18px 4vw 4px;display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center}
+#moods{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+.chip{padding:7px 14px;border-radius:99px;background:var(--panel2);border:1px solid #ffffff12;white-space:nowrap;font-size:14px;transition:.2s}
+.chip:hover{border-color:var(--a)}
+.chip.on{background:linear-gradient(90deg,var(--a),var(--b));color:#000;font-weight:700;border-color:transparent}
+.time{display:flex;gap:10px;align-items:center;color:var(--mut);font-size:14px}
+.time input{accent-color:var(--a);width:140px}
+
+/* rows */
+main{padding:6px 0 80px}
+.row{margin:22px 0}
+.row h2{padding:0 4vw 10px;font-size:20px;letter-spacing:-.3px}
+.row h2 small{color:var(--mut);font-weight:400;font-size:13px;margin-left:10px}
+.scroller{display:flex;gap:14px;overflow-x:auto;padding:8px 4vw 18px;scroll-snap-type:x proximity;scrollbar-width:none}
+.scroller::-webkit-scrollbar{display:none}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px;padding:0 4vw}
+.card{position:relative;flex:none;width:158px;aspect-ratio:2/3;border-radius:var(--r);overflow:hidden;cursor:pointer;scroll-snap-align:start;transition:transform .25s,box-shadow .25s;background:var(--panel)}
+.grid .card{width:auto}
+.card:hover,.card:focus-visible{transform:scale(1.07) translateY(-5px);box-shadow:0 18px 40px #000b,0 0 0 2px #ffffff30;z-index:3;outline:0}
+.poster{position:absolute;inset:0;background-size:cover;background-position:center;display:grid;place-items:center;font-size:56px}
+.poster em{font-style:normal;filter:drop-shadow(0 6px 14px #0008)}
+.card-meta{position:absolute;left:0;right:0;bottom:0;padding:34px 10px 9px;background:linear-gradient(transparent,#000d);display:flex;flex-direction:column;font-weight:600;font-size:13px;line-height:1.25}
+.card-meta small{font-weight:400;color:#c8c8d8;font-size:11px;margin-top:2px}
+.card-ov{position:absolute;top:8px;right:8px;display:flex;flex-direction:column;gap:6px;opacity:0;transition:.2s}
+.card:hover .card-ov,.card:focus-within .card-ov{opacity:1}
+@media(hover:none){.card-ov{opacity:1}.card-ov .ib{width:32px;height:32px}}
+.card .bar{position:absolute;left:0;right:0;bottom:0;height:4px;background:#ffffff30}
+.card .bar b{display:block;height:100%;background:var(--a)}
+.empty{text-align:center;color:var(--mut);padding:80px 20px}
+.pad{padding:100px 4vw 0}
+.qinfo{padding:100px 4vw 14px;color:var(--mut)}
+.qinfo b{color:var(--b)}
+
+/* modal */
+#modal{position:fixed;inset:0;z-index:80;background:#000b;backdrop-filter:blur(8px);display:grid;place-items:center;padding:16px;animation:fade .2s}
+@keyframes fade{from{opacity:0}}
+.mbox{background:var(--panel);border-radius:20px;width:min(760px,100%);max-height:92vh;overflow:auto;position:relative;animation:up .3s both}
+.mclose{position:absolute;top:12px;right:12px;z-index:3}
+.dhead{height:250px;background-size:cover;background-position:center;position:relative;display:flex;align-items:flex-end}
+.dhead::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,var(--panel),transparent 70%)}
+.dhead h2{position:relative;z-index:2;padding:0 24px;font-size:34px;letter-spacing:-1px;z-index:2}
+.dbody{padding:14px 24px 26px}
+.dbody p{color:#d6d6e4;margin:10px 0}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.tags span{background:#ffffff14;border-radius:99px;padding:3px 10px;font-size:12px}
+.stars button{font-size:26px;color:#ffffff30;transition:.15s}
+.stars button.on,.stars button:hover{color:var(--b);transform:scale(1.15)}
+.mut{color:var(--mut)}
+.note{font-size:12px;color:var(--mut);margin-top:14px}
+.code{font-size:44px;font-weight:800;letter-spacing:10px;text-align:center;padding:14px;margin:14px 0;background:var(--panel2);border-radius:var(--r);background-image:linear-gradient(90deg,var(--a),var(--b));-webkit-background-clip:text;background-clip:text;color:transparent}
+.join{display:flex;gap:8px;margin-top:12px}
+.join input,.fld{flex:1;background:var(--panel2);border:1px solid #ffffff18;border-radius:12px;padding:10px 14px;outline:0;text-transform:none}
+.join input{text-transform:uppercase;letter-spacing:6px;text-align:center;font-weight:700}
+.rbox{font-size:90px;text-align:center;padding:28px 10px 10px;min-height:190px}
+.rbox span{display:block;font-size:22px;font-weight:700;margin-top:8px}
+.persona{margin:14px 4vw;padding:20px;border-radius:20px;background:linear-gradient(135deg,#ff3d7122,#ff9f1c18);border:1px solid #ffffff14}
+.persona h3{font-size:22px}
+.gbar{display:flex;align-items:center;gap:10px;margin:8px 0;font-size:13px}
+.gbar i{height:8px;border-radius:9px;background:linear-gradient(90deg,var(--a),var(--b));display:block}
+.gbar span{width:84px;color:var(--mut)}
+
+/* player */
+#player{position:fixed;inset:0;z-index:100;background:#000;display:flex}
+.stage{position:relative;flex:1;display:grid;place-items:center;overflow:hidden;background:#000}
+#amb{position:absolute;inset:-10%;width:120%;height:120%;filter:blur(60px) saturate(1.9);opacity:.75;transition:opacity .4s}
+#video{position:relative;max-width:100%;max-height:100%;width:100%;height:100%;object-fit:contain;background:transparent;z-index:2}
+#video::cue{background:#000a;color:#fff;font-size:1.2em}
+#trailerBox{position:absolute;inset:0;z-index:2}
+#trailerBox iframe{width:100%;height:100%;border:0}
+.pbar{position:absolute;left:0;right:0;z-index:5;padding:14px 18px;transition:opacity .3s}
+.pbar.top{top:0;display:flex;align-items:center;gap:14px;background:linear-gradient(#000c,transparent)}
+.pbar.top span{font-weight:700}
+.pbar.ctrl{bottom:0;background:linear-gradient(transparent,#000d);padding-top:40px}
+.pbar .row2{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.pbar .row2 button{min-width:36px;height:36px;border-radius:10px;font-size:14px;padding:0 8px}
+.pbar .row2 button:hover{background:#ffffff22}
+.pbar .row2 button.on{color:var(--b)}
+.sp{flex:1}
+#time{font-size:13px;color:#ddd;margin:0 8px;font-variant-numeric:tabular-nums}
+#seek{width:100%;accent-color:var(--a);height:6px;cursor:pointer}
+#vol{width:80px;accent-color:var(--a)}
+.hideui .pbar{opacity:0;pointer-events:none}.hideui{cursor:none}
+#player.trailer .ctrl{display:none}
+#chat{width:300px;background:#0d0d15;border-left:1px solid #ffffff14;display:flex;flex-direction:column;z-index:6}
+#chat header{position:static;padding:12px 14px;background:none;font-weight:700;display:flex;justify-content:space-between;backdrop-filter:none}
+#msgs{flex:1;overflow:auto;padding:10px 14px;display:flex;flex-direction:column;gap:8px;font-size:14px}
+#msgs div b{color:var(--b);margin-right:6px;font-size:12px}
+#msgs .me b{color:var(--a)}
+.react{display:flex;gap:6px;padding:8px 14px}
+.react button{font-size:22px;transition:.15s}.react button:hover{transform:scale(1.35) rotate(-8deg)}
+#chat form{display:flex;gap:6px;padding:10px 14px}
+#floats{position:absolute;inset:0;pointer-events:none;z-index:6;overflow:hidden}
+#floats span{position:absolute;bottom:80px;font-size:38px;animation:rise 2.6s ease-out forwards}
+@keyframes rise{to{transform:translateY(-70vh) rotate(20deg);opacity:0}}
+@media(max-width:760px){#chat{position:absolute;right:0;top:0;bottom:0;width:80%}}
+
+#toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:200;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
+#toast div{background:#222233f0;border:1px solid #ffffff22;padding:10px 18px;border-radius:99px;animation:up .3s both;font-size:14px;backdrop-filter:blur(8px)}
+footer{text-align:center;color:var(--mut);font-size:12px;padding:30px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="#" data-nav="home">Movie<b>filx</b></a>
+  <div class="search">
+    <input id="q" placeholder="Search karo ya bolo: “90 min se kam comedy”" autocomplete="off" aria-label="Search">
+    <button id="mic" title="Bolkar search karo">🎤</button><kbd>/</kbd>
+    <div id="sugg" hidden></div>
+  </div>
+  <button class="ib" data-act="settings" title="Settings">⚙</button>
+  <nav>
+    <button data-nav="home" class="on">🏠 Home</button>
+    <button data-nav="mylist">❤️ Meri List</button>
+    <button data-act="roulette">🎲 Movie Roulette</button>
+    <button data-act="party">🎉 Watch Party</button>
+    <button data-act="local">📁 Apni file chalao</button>
+  </nav>
+</header>
+<input type="file" id="lf" accept="video/*" hidden>
+<input type="file" id="sf" accept=".vtt,.srt" hidden>
+
+<section id="hero"></section>
+<section class="filters" id="filters">
+  <div id="moods"></div>
+  <label class="time">⏱ <span id="tl">Koi time limit nahi</span><input type="range" id="tr" min="60" max="180" step="10" value="180" aria-label="Time limit"></label>
+</section>
+<main id="main"></main>
+<footer>Moviefilx · sirf apne licensed / free content ke saath use karo · Metadata: TMDB (optional)</footer>
+
+<div id="modal" hidden></div>
+
+<div id="player" hidden>
+  <div class="stage" id="stage">
+    <canvas id="amb" width="32" height="18"></canvas>
+    <video id="video" playsinline></video>
+    <div id="trailerBox" hidden></div>
+    <div id="floats"></div>
+    <div class="pbar top"><button class="ib" id="pclose" title="Wapas (Esc)">←</button><span id="ptitle"></span><span class="sp"></span><span id="pparty" class="mut"></span></div>
+    <div class="pbar ctrl">
+      <input type="range" id="seek" min="0" max="1000" value="0" aria-label="Seek">
+      <div class="row2">
+        <button id="bplay" title="Play/Pause (space)">▶</button>
+        <button id="bb" title="-10s (J)">⟲10</button>
+        <button id="bf" title="+10s (L)">10⟳</button>
+        <button id="bmute" title="Mute (M)">🔊</button><input type="range" id="vol" min="0" max="1" step="0.05" value="1" aria-label="Volume">
+        <span id="time">0:00 / 0:00</span><span class="sp"></span>
+        <button id="bspeed" title="Speed">1x</button>
+        <button id="bcc" title="Subtitles (C) — .srt/.vtt upload">CC</button>
+        <button id="bamb" class="on" title="Ambient glow (A)">✨</button>
+        <button id="bsleep" title="Sleep timer">😴</button>
+        <button id="bpip" title="Picture in picture">⧉</button>
+        <button id="bchat" title="Chat">💬</button>
+        <button id="bfs" title="Fullscreen (F)">⛶</button>
+      </div>
+    </div>
+  </div>
+  <aside id="chat" hidden>
+    <header><span>💬 Party Chat</span><button data-act="chatclose">✕</button></header>
+    <div id="msgs"></div>
+    <div class="react"><button data-react="🔥">🔥</button><button data-react="😂">😂</button><button data-react="😱">😱</button><button data-react="❤️">❤️</button><button data-react="👏">👏</button><button data-react="😭">😭</button></div>
+    <form id="cf"><input class="fld" id="ci" placeholder="Kuch likho…" autocomplete="off"><button class="btn pri" style="padding:8px 14px">➤</button></form>
+  </aside>
+</div>
+<div id="toast"></div>
+
+<script>
+/* =========================================================
+   Moviefilx — single file movie website
+   - Demo catalog uses free Blender / Google sample videos.
+   - Apne licensed videos ke liye CATALOG mein `src` badlo.
+   - Optional: Settings mein TMDB API key daalo -> asli trending
+     movies + search + trailers.
+   ========================================================= */
+const SAMPLE='https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/';
+const IMG='https://image.tmdb.org/t/p/';
+const CATALOG=[
+ {id:'c1',title:'Neon Monsoon',year:2025,rt:118,rating:8.1,genres:['Sci-Fi','Thriller'],moods:['mindbending','thrilling'],emoji:'🌧️',hue:280,src:SAMPLE+'BigBuckBunny.mp4',desc:'Baarish ke shehar mein ek hacker ko pata chalta hai ki uski yaadein kisi aur ki hain.'},
+ {id:'c2',title:'The Last Lighthouse',year:2024,rt:104,rating:7.8,genres:['Drama','Mystery'],moods:['emotional','mindbending'],emoji:'🏮',hue:200,src:SAMPLE+'ElephantsDream.mp4',desc:'Samundar ke beech akela lighthouse-keeper, aur ek rehasyamayi signal jo har raat aata hai.'},
+ {id:'c3',title:'Chai & Chaos',year:2026,rt:96,rating:7.4,genres:['Comedy','Romance'],moods:['funny','cozy','feelgood'],emoji:'☕',hue:30,src:SAMPLE+'ForBiggerFun.mp4',desc:'Ek chai-tapri, do rival startup founders, aur ek shaadi jo bilkul plan ke mutabik nahi chal rahi.'},
+ {id:'c4',title:"Dragon's Daughter",year:2023,rt:121,rating:8.4,genres:['Fantasy','Adventure'],moods:['epic','emotional'],emoji:'🐉',hue:350,src:SAMPLE+'Sintel.mp4',desc:'Ek ladki apne khoye hue dragon ko dhoondhne nikalti hai — aur saccha safar khud ko dhoondhna nikalta hai.'},
+ {id:'c5',title:'Steel Tears',year:2025,rt:132,rating:7.9,genres:['Sci-Fi','Action'],moods:['thrilling','epic'],emoji:'🤖',hue:190,src:SAMPLE+'TearsOfSteel.mp4',desc:'Aakhri insaan-shehar bachane ke liye ek engineer ko apne hi banaye robot se haath milana padta hai.'},
+ {id:'c6',title:'Midnight Mehfil',year:2024,rt:109,rating:7.2,genres:['Horror','Thriller'],moods:['scary','thrilling'],emoji:'👻',hue:260,src:SAMPLE+'ForBiggerEscapes.mp4',desc:'Purani haveli mein ek mehfil jo har raat 12 baje shuru hoti hai — aur mehmaan zinda nahi hain.'},
+ {id:'c7',title:'Rooftop Rani',year:2025,rt:101,rating:7.6,genres:['Comedy','Drama'],moods:['funny','feelgood'],emoji:'👑',hue:320,src:SAMPLE+'ForBiggerJoyrides.mp4',desc:'Mohalle ki chhat par ek ladki, ek cricket team, aur ek bada sapna.'},
+ {id:'c8',title:'Burnout Highway',year:2026,rt:114,rating:7.0,genres:['Action'],moods:['thrilling'],emoji:'🏎️',hue:15,src:SAMPLE+'ForBiggerBlazes.mp4',desc:'Ek raat, ek highway, aur ek race jisme haarne ki keemat zindagi hai.'},
+ {id:'c9',title:'Paper Moon Diaries',year:2022,rt:98,rating:8.0,genres:['Romance','Drama'],moods:['emotional','cozy'],emoji:'🌙',hue:45,src:SAMPLE+'ForBiggerMeltdowns.mp4',desc:'Do ajnabi, ek diary, aur chitthiyon mein basa ek adhoora pyaar.'},
+ {id:'c10',title:'Bullrun',year:2023,rt:92,rating:7.5,genres:['Documentary','Adventure'],moods:['epic','feelgood'],emoji:'🏁',hue:140,src:SAMPLE+'WeAreGoingOnBullrun.mp4',desc:'Dus desh, ek road-rally, aur woh log jo manzil se zyada safar ke liye jeete hain.'},
+ {id:'c11',title:'Dirt Road Dreams',year:2024,rt:88,rating:7.1,genres:['Adventure','Drama'],moods:['feelgood','cozy'],emoji:'🌄',hue:90,src:SAMPLE+'SubaruOutbackOnStreetAndDirt.mp4',desc:'Pahadon ke kachche raste, purani gaadi, aur ek parivaar jo phir se saath chalna seekh raha hai.'},
+ {id:'c12',title:'The Grand Heist',year:2025,rt:126,rating:8.2,genres:['Crime','Thriller'],moods:['mindbending','thrilling'],emoji:'💎',hue:50,src:SAMPLE+'WhatCarCanYouGetForAGrand.mp4',desc:'Paanch chor, ek museum, aur ek plan jisme har kadi ke peeche ek twist chhupa hai.'},
+ {id:'c13',title:'Quiet Machines',year:2026,rt:107,rating:7.7,genres:['Sci-Fi','Drama'],moods:['mindbending','emotional'],emoji:'🧠',hue:210,src:SAMPLE+'VolkswagenGTIReview.mp4',desc:'Jab machine insaan se zyada insaani ho jaaye, to kaun kise samjhaye?'}
+];
+const MOODS=[['funny','😂 Hasao'],['cozy','☕ Cozy'],['thrilling','🔥 Thrill'],['mindbending','🧠 Dimag ghuma de'],['emotional','🥹 Emotional'],['epic','⚔️ Epic'],['scary','👻 Darr'],['feelgood','☀️ Feel-good']];
+const GSYN={'Comedy':['comedy','funny','hasi','hansi','haso','hasao','mazedar','laugh'],'Romance':['romance','romantic','pyaar','pyar','love','ishq'],'Horror':['horror','darr','darawani','bhoot','scary'],'Action':['action','maar','fight','dhamaka','race'],'Sci-Fi':['scifi','sci','future','robot','space','ai'],'Drama':['drama'],'Thriller':['thriller','suspense'],'Crime':['crime','heist','chori'],'Fantasy':['fantasy','dragon','jaadu'],'Adventure':['adventure','safar','road'],'Documentary':['documentary','real'],'Mystery':['mystery','rahasya']};
+const MSYN={cozy:['cozy','chill','relax','sukoon'],mindbending:['mind','twist','dimag','confusing'],emotional:['emotional','rona','sad','dil'],epic:['epic','grand','bada'],feelgood:['feelgood','khush','happy','uplifting'],thrilling:['thrill','thrilling','edge','romanch'],funny:['mazaa'],scary:['darawana']};
+const STOP=new Set(['se','kam','under','ki','ka','ke','min','mins','minute','minutes','movie','film','dikhao','mujhe','me','mein','ek','koi','hr','hour','ghanta','ghante','chahiye','wali','wala','for','a','the','with']);
+const TMDB_G={28:'Action',12:'Adventure',16:'Animation',35:'Comedy',80:'Crime',99:'Documentary',18:'Drama',10751:'Family',14:'Fantasy',27:'Horror',9648:'Mystery',10749:'Romance',878:'Sci-Fi',53:'Thriller',10752:'War',37:'Western',36:'History',10402:'Music'};
+const PERSONA={'Sci-Fi':'Future Dreamer 🚀','Thriller':'Edge-of-Seat Explorer 🔥','Comedy':'Laughter Hunter 😂','Romance':'Hopeless Romantic 💌','Drama':'Deep Feeler 🥹','Action':'Adrenaline Chaser 🏎️','Horror':'Midnight Brave 👻','Fantasy':'Realm Wanderer 🐉','Adventure':'Road Dreamer 🌄','Crime':'Plot Detective 🕵️','Mystery':'Clue Collector 🔎','Documentary':'Curious Mind 🧐'};
+
+/* ---------- helpers ---------- */
+const $=(s,el=document)=>el.querySelector(s), $$=(s,el=document)=>[...el.querySelectorAll(s)];
+const store={get(k,d){try{const v=localStorage.getItem('cv_'+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem('cv_'+k,JSON.stringify(v))}catch(e){}}};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const norm=s=>String(s).toLowerCase().replace(/[^a-z0-9\u0900-\u097f ]/g,' ').replace(/\s+/g,' ').trim();
+const fmt=s=>{if(!isFinite(s))return'0:00';s=Math.floor(s);const h=Math.floor(s/3600),m=Math.floor(s%3600/60),c=s%60;return(h?h+':'+String(m).padStart(2,'0'):m)+':'+String(c).padStart(2,'0')};
+function toast(t){const d=document.createElement('div');d.textContent=t;$('#toast').appendChild(d);setTimeout(()=>d.remove(),2800)}
+
+/* ---------- state ---------- */
+let list=store.get('list',[]), prog=store.get('prog',{}), ratings=store.get('rate',{}), extra=[];
+const state={view:'home',mood:null,maxTime:180,query:''};
+const all=()=>[...CATALOG,...extra];
+const byId=id=>all().find(m=>m.id===id);
+const passes=m=>(!state.mood||m.moods.includes(state.mood))&&(!m.rt||state.maxTime>=180||m.rt<=state.maxTime);
+
+/* ---------- visuals ---------- */
+function bgStyle(m){
+  if(m.backdrop||m.poster)return `background-image:linear-gradient(#0003,#0003),url(${m.backdrop||m.poster})`;
+  return `background-image:radial-gradient(circle at 70% 30%,hsl(${m.hue} 80% 45%),transparent 60%),linear-gradient(160deg,hsl(${m.hue} 65% 28%),hsl(${(m.hue+50)%360} 60% 8%))`;
+}
+function poster(m){
+  if(m.poster)return `<div class="poster" style="background-image:url(${m.poster})"></div>`;
+  return `<div class="poster" style="${bgStyle(m)}"><em>${m.emoji}</em></div>`;
+}
+function card(m){
+  const inL=list.includes(m.id),p=prog[m.id],pct=p&&p.d?Math.min(100,p.t/p.d*100):0;
+  return `<article class="card" data-open="${m.id}" tabindex="0">${poster(m)}
+  <div class="card-ov"><button class="ib" data-play="${m.id}" title="Play">▶</button><button class="ib" data-list="${m.id}" title="Meri List">${inL?'✓':'+'}</button></div>
+  ${pct>2?`<i class="bar"><b style="width:${pct}%"></b></i>`:''}
+  <div class="card-meta"><span>${esc(m.title)}</span><small>★ ${m.rating} · ${m.rt?m.rt+' min':m.year}</small></div></article>`;
+}
+const row=(t,items,sub='')=>items.length?`<section class="row"><h2>${t}<small>${sub}</small></h2><div class="scroller">${items.map(card).join('')}</div></section>`:'';
+
+/* ---------- hero ---------- */
+const heroItems=[...CATALOG].sort((a,b)=>b.rating-a.rating).slice(0,5);
+let hi=0,heroT;
+function heroShow(i){
+  hi=i;const m=heroItems[i];
+  $('#hero').innerHTML=`<div class="hbg" style="${bgStyle(m)}"></div><div class="hshade"></div><div class="hemoji">${m.emoji}</div>
+  <div class="hc" key="${m.id}"><span class="tag">#${i+1} Aaj ka pick</span><h1>${esc(m.title)}</h1>
+  <p class="meta">★ ${m.rating} · ${m.year} · ${m.rt} min · ${m.genres.join(' / ')}</p><p class="desc">${esc(m.desc)}</p>
+  <div class="hb"><button class="btn pri" data-play="${m.id}">▶ Chalao</button><button class="btn" data-open="${m.id}">ℹ Details</button><button class="btn" data-list="${m.id}">${list.includes(m.id)?'✓ List mein hai':'+ Meri List'}</button></div>
+  <div class="dots">${heroItems.map((_,j)=>`<i class="${j===i?'on':''}" data-hero="${j}"></i>`).join('')}</div></div>`;
+}
+function heroTimer(){clearInterval(heroT);heroT=setInterval(()=>{if(!$('#player').hidden||state.view!=='home')return;heroShow((hi+1)%heroItems.length)},8000)}
+
+/* ---------- views ---------- */
+function renderHome(){
+  const items=all().filter(passes);let h='';
+  const cont=all().filter(m=>prog[m.id]&&prog[m.id].t>10&&prog[m.id].d&&prog[m.id].t<prog[m.id].d*.95);
+  h+=row('▶ Dekhna jaari rakho',cont);
+  h+=row('🔥 Top rated',[...items].sort((a,b)=>b.rating-a.rating).slice(0,10),state.mood?'mood ke hisaab se':'');
+  h+=row('🌍 Trending (TMDB)',items.filter(m=>m.tmdb));
+  [...new Set(items.flatMap(m=>m.genres))].forEach(g=>{const x=items.filter(m=>m.genres.includes(g));if(x.length>=2)h+=row(g,x)});
+  return h||`<div class="empty">😕 Is mood + time ke liye kuch nahi mila.<br>Time limit badha do ya mood hata do.</div>`;
+}
+function renderMyList(){
+  const items=list.map(byId).filter(Boolean);
+  const seen=Object.keys(prog).map(byId).filter(Boolean);
+  const cnt={};[...items,...seen].forEach(m=>m.genres.forEach(g=>cnt[g]=(cnt[g]||0)+1));
+  const top=Object.entries(cnt).sort((a,b)=>b[1]-a[1]).slice(0,5),mx=top.length?top[0][1]:1;
+  let h=`<div class="pad"></div>`;
+  if(top.length)h+=`<div class="persona"><span class="mut">Tumhari taste profile</span><h3>${PERSONA[top[0][0]]||'Movie Explorer 🎬'}</h3>${top.map(([g,c])=>`<div class="gbar"><span>${g}</span><i style="width:${c/mx*70}%"></i>${c}</div>`).join('')}</div>`;
+  h+=items.length?`<section class="row"><h2>❤️ Meri List<small>${items.length} titles</small></h2><div class="grid">${items.map(card).join('')}</div></section>`:`<div class="empty">Abhi list khaali hai.<br>Kisi bhi card par <b>+</b> dabao.</div>`;
+  return h;
+}
+function renderSearch(){
+  const p=parse(state.query),res=search(state.query);
+  const chips=[...p.genres,...p.moods,p.max?`≤ ${p.max} min`:null,...p.words.map(w=>'“'+w+'”')].filter(Boolean);
+  return `<div class="qinfo">Search: <b>${esc(state.query)}</b>${chips.length?` — samjha: <b>${esc(chips.join(' · '))}</b>`:''}</div>`+
+    (res.length?`<div class="grid">${res.map(r=>card(r.m)).join('')}</div>`:`<div class="empty">Kuch nahi mila 😅 — dusre shabd try karo (hindi/english dono chalte hain).</div>`);
+}
+function render(){
+  const main=$('#main');
+  const home=state.view==='home';
+  $('#hero').hidden=!home;$('#filters').hidden=!home;
+  main.innerHTML=state.view==='mylist'?renderMyList():state.view==='search'?renderSearch():renderHome();
+  $$('nav [data-nav]').forEach(b=>b.classList.toggle('on',b.dataset.nav===state.view));
+}
+function go(v){state.view=v;if(v!=='search'){state.query='';$('#q').value=''}render();scrollTo({top:0,behavior:'smooth'})}
+
+/* ---------- smart search ---------- */
+function lev(a,b){const m=a.length,n=b.length;if(!m)return n;if(!n)return m;let prev=Array.from({length:n+1},(_,i)=>i);for(let i=1;i<=m;i++){const cur=[i];for(let j=1;j<=n;j++)cur[j]=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+(a[i-1]===b[j-1]?0:1));prev=cur}return prev[n]}
+function parse(q){
+  const p={max:null,genres:[],moods:[],words:[]};
+  const t1=/(\d{2,3})\s*(?:min|mins|minute|minutes|m)\b/i,t2=/(\d(?:\.\d)?)\s*(?:hr|hrs|hour|hours|ghanta|ghante)/i;
+  let mm=q.match(t1);if(mm)p.max=+mm[1];
+  mm=q.match(t2);if(mm)p.max=Math.round(parseFloat(mm[1])*60);
+  norm(q.replace(t1,' ').replace(t2,' ')).split(' ').filter(Boolean).forEach(w=>{
+    let hit=false;
+    for(const [g,l] of Object.entries(GSYN))if(l.includes(w)){if(!p.genres.includes(g))p.genres.push(g);hit=true}
+    for(const [k,l] of Object.entries(MSYN))if(l.includes(w)){if(!p.moods.includes(k))p.moods.push(k);hit=true}
+    if(!hit&&!STOP.has(w)&&!/^\d+$/.test(w)&&w.length>1)p.words.push(w);
+  });
+  return p;
+}
+function score(m,p){
+  if(p.max&&m.rt&&m.rt>p.max)return 0;
+  let s=0;const t=norm(m.title),d=norm(m.desc);
+  for(const w of p.words){
+    if(t.includes(w))s+=10;
+    else if(t.split(' ').some(tw=>lev(tw,w)<=(w.length>4?2:1)))s+=6;
+    if(d.includes(w))s+=2;
+  }
+  p.genres.forEach(g=>{if(m.genres.includes(g))s+=8});
+  p.moods.forEach(k=>{if(m.moods.includes(k))s+=8});
+  if(p.max&&m.rt)s+=1;
+  return s;
+}
+function search(q){
+  const p=parse(q);if(!p.max&&!p.genres.length&&!p.moods.length&&!p.words.length)return[];
+  return all().map(m=>({m,s:score(m,p)})).filter(x=>x.s>0).sort((a,b)=>b.s-a.s||b.m.rating-a.m.rating).map(x=>({m:x.m,s:x.s}));
+}
+const COMMANDS=[['🏠 Home','home'],['❤️ Meri List','mylist'],['🎲 Movie Roulette','roulette'],['🎉 Watch Party','party'],['📁 Apni file chalao','local'],['⚙ Settings','settings']];
+let selIdx=-1,remoteT;
+function showSugg(){
+  const q=$('#q').value,box=$('#sugg');selIdx=-1;
+  if(!q.trim()){box.hidden=true;return}
+  if(q.startsWith('>')){
+    const f=norm(q.slice(1));
+    box.innerHTML=COMMANDS.filter(c=>norm(c[0]).includes(f)).map(c=>`<div class="it" data-cmd="${c[1]}"><span>${c[0]}</span></div>`).join('')||'<div class="it">Koi command nahi</div>';
+    box.hidden=false;return;
+  }
+  const p=parse(q),res=search(q).slice(0,6);
+  const chips=[...p.genres,...p.moods,p.max?`≤ ${p.max} min`:null].filter(Boolean);
+  box.innerHTML=(chips.length?`<div class="parsed">✨ Samjha: ${esc(chips.join(' · '))}</div>`:'')+
+    (res.map(r=>`<div class="it" data-open="${r.m.id}"><div class="th" style="${bgStyle(r.m)}">${r.m.poster?'':r.m.emoji}</div><div>${esc(r.m.title)}<small>${r.m.year} · ${r.m.genres.join(', ')}${r.m.rt?' · '+r.m.rt+'m':''}</small></div></div>`).join('')||'<div class="it mut">Kuch nahi mila…</div>')+
+    `<div class="it" data-fullsearch="1"><span class="mut">Saare results dekho ↵</span></div>`;
+  box.hidden=false;
+  clearTimeout(remoteT);remoteT=setTimeout(()=>remoteSearch(q),400);
+}
+async function remoteSearch(q){
+  if(!store.get('tmdb','')||q.startsWith('>')||q.length<3)return;
+  try{const d=await tmdb('/search/movie',{query:q});if(!d)return;
+    d.results.slice(0,8).map(mapT).forEach(m=>{if(!byId(m.id))extra.push(m)});
+    if($('#q').value===q&&!$('#sugg').hidden)showSugg();
+  }catch(e){}
+}
+$('#q').addEventListener('input',showSugg);
+$('#q').addEventListener('keydown',e=>{
+  const its=$$('#sugg .it');
+  if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();selIdx=(selIdx+(e.key==='ArrowDown'?1:-1)+its.length)%its.length;its.forEach((x,i)=>x.classList.toggle('sel',i===selIdx))}
+  else if(e.key==='Enter'){
+    if(selIdx>=0&&its[selIdx]){its[selIdx].click();return}
+    const q=$('#q').value;if(q.startsWith('>')){its[0]&&its[0].click();return}
+    if(q.trim()){state.query=q;state.view='search';$('#sugg').hidden=true;render();scrollTo(0,0)}
+  }else if(e.key==='Escape'){$('#sugg').hidden=true;$('#q').blur()}
+});
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+$('#mic').onclick=()=>{
+  if(!SR)return toast('Is browser mein voice search nahi hai (Chrome try karo)');
+  const r=new SR();r.lang='hi-IN';r.interimResults=false;toast('🎤 Bolo…');
+  r.onresult=e=>{$('#q').value=e.results[0][0].transcript;showSugg();state.query=$('#q').value;state.view='search';render()};
+  r.onerror=()=>toast('Awaaz samajh nahi aayi');r.start();
+};
+
+/* ---------- TMDB (optional) ---------- */
+async function tmdb(path,params={}){
+  const key=store.get('tmdb','');if(!key)return null;
+  const u=new URL('https://api.themoviedb.org/3'+path);u.searchParams.set('api_key',key);
+  Object.entries(params).forEach(([k,v])=>u.searchParams.set(k,v));
+  const r=await fetch(u);if(!r.ok)throw new Error('TMDB '+r.status);return r.json();
+}
+const mapT=x=>({id:'t'+x.id,tmdb:x.id,title:x.title,year:(x.release_date||'').slice(0,4)||'—',rt:null,rating:+(x.vote_average||0).toFixed(1),genres:(x.genre_ids||[]).map(i=>TMDB_G[i]).filter(Boolean),moods:[],desc:x.overview||'',poster:x.poster_path?IMG+'w500'+x.poster_path:null,backdrop:x.backdrop_path?IMG+'w1280'+x.backdrop_path:null,emoji:'🎬',hue:(x.id*37)%360});
+async function loadTMDB(){
+  try{const d=await tmdb('/trending/movie/week');if(!d)return;extra=d.results.map(mapT);render();toast('TMDB se trending movies aa gayin ✅')}
+  catch(e){toast('TMDB load fail — API key check karo')}
+}
+async function openTrailer(m){
+  try{
+    const d=await tmdb(`/movie/${m.tmdb}/videos`),vs=(d&&d.results)||[];
+    const t=vs.find(x=>x.site==='YouTube'&&x.type==='Trailer')||vs.find(x=>x.site==='YouTube');
+    if(!t)return toast('Trailer nahi mila');
+    cur=m;$('#player').hidden=false;$('#player').classList.add('trailer');document.body.style.overflow='hidden';
+    video.hidden=true;$('#amb').hidden=true;$('#ptitle').textContent=m.title+' — Trailer';
+    $('#trailerBox').hidden=false;$('#trailerBox').innerHTML=`<iframe src="https://www.youtube.com/embed/${t.key}?autoplay=1&rel=0" allow="autoplay;fullscreen;picture-in-picture" allowfullscreen></iframe>`;
+  }catch(e){toast('Trailer load nahi hua')}
+}
+
+/* ---------- modal / detail ---------- */
+function modal(html){const m=$('#modal');m.innerHTML=`<div class="mbox"><button class="ib mclose" data-act="closemodal">✕</button>${html}</div>`;m.hidden=false}
+function closeModal(){$('#modal').hidden=true;$('#modal').innerHTML=''}
+const stars=m=>`<div class="stars">${[1,2,3,4,5].map(n=>`<button data-rate="${m.id}:${n}" class="${(ratings[m.id]||0)>=n?'on':''}">★</button>`).join('')}</div>`;
+function openDetail(id){
+  $('#sugg').hidden=true;
+  const m=byId(id);if(!m)return;
+  const sim=all().filter(x=>x.id!==id&&x.genres.some(g=>m.genres.includes(g))).slice(0,6);
+  modal(`<div class="dhead" style="${bgStyle(m)}"><h2>${esc(m.title)}</h2></div><div class="dbody">
+   <div class="mut">★ ${m.rating} · ${m.year}${m.rt?' · '+m.rt+' min':''}</div>
+   <div class="tags">${m.genres.map(g=>`<span>${g}</span>`).join('')}${m.moods.map(k=>`<span>${(MOODS.find(x=>x[0]===k)||[0,k])[1]}</span>`).join('')}</div>
+   <p>${esc(m.desc||'Description available nahi.')}</p>
+   <div class="hb"><button class="btn pri" data-play="${m.id}">${m.src?'▶ Chalao':'▶ Trailer'}</button>
+   <button class="btn" data-list="${m.id}">${list.includes(m.id)?'✓ List mein hai':'+ Meri List'}</button>
+   ${m.src?`<button class="btn" data-partyplay="${m.id}">🎉 Party mein dekho</button>`:''}</div>
+   <p class="mut" style="margin-top:16px">Apni rating:</p>${stars(m)}
+   ${sim.length?`<h3 style="margin:18px 0 8px">Aisi aur</h3><div class="scroller" style="padding:0 0 8px">${sim.map(card).join('')}</div>`:''}</div>`);
+}
+function toggleList(id){
+  const i=list.indexOf(id);i>=0?list.splice(i,1):list.push(id);store.set('list',list);
+  toast(i>=0?'List se hata diya':'Meri List mein add ✓');
+  $$('[data-list]').forEach(b=>{const on=list.includes(b.dataset.list);b.textContent=b.classList.contains('btn')?(on?'✓ List mein hai':'+ Meri List'):(on?'✓':'+')});
+  if(state.view==='mylist')render();
+}
+
+/* ---------- roulette ---------- */
+function roulette(){
+  const pool=all().filter(passes);if(!pool.length)return toast('Filter ke hisaab se kuch nahi mila');
+  modal(`<div class="rbox" id="rbox">🎲</div><div class="dbody" id="rres" style="text-align:center"></div>`);
+  let i=0;const t=setInterval(()=>{
+    if(!$('#rbox')){clearInterval(t);return}
+    const x=pool[Math.floor(Math.random()*pool.length)];
+    $('#rbox').innerHTML=`${x.emoji||'🎬'}<span>${esc(x.title)}</span>`;
+    if(++i>20){clearInterval(t);$('#rres').innerHTML=`<p>Aaj raat ka fix: <b>${esc(x.title)}</b> — ★ ${x.rating}</p><div class="hb" style="justify-content:center"><button class="btn pri" data-play="${x.id}">▶ Chalao</button><button class="btn" data-open="${x.id}">Details</button><button class="btn" data-act="roulette">🎲 Phir se</button></div>`}
+  },90);
+}
+
+/* ---------- player ---------- */
+const video=$('#video');let cur=null,lastSave=0,ambOn=true,ambT,sleepT,sleepIdx=0,idleT;
+const SPEEDS=[1,1.25,1.5,2,0.75],SLEEP=[0,15,30,60];let spIdx=0;
+function startAmbient(){
+  stopAmbient();$('#amb').hidden=!ambOn;if(!ambOn)return;
+  const c=$('#amb'),x=c.getContext('2d');
+  ambT=setInterval(()=>{try{x.drawImage(video,0,0,c.width,c.height)}catch(e){}},120);
+}
+function stopAmbient(){clearInterval(ambT)}
+function play(id){
+  const m=byId(id);if(!m)return;closeModal();
+  if(m.src)openPlayer(m);else if(m.tmdb)openTrailer(m);else toast('Is title ka video source nahi hai');
+}
+function openPlayer(m,remoteTime){
+  cur=m;$('#player').hidden=false;$('#player').classList.remove('trailer');document.body.style.overflow='hidden';
+  $('#trailerBox').hidden=true;$('#trailerBox').innerHTML='';video.hidden=false;
+  $('#ptitle').textContent=m.title;spIdx=0;$('#bspeed').textContent='1x';
+  $$('track',video).forEach(t=>t.remove());
+  video.src=m.src;video.playbackRate=1;
+  const p=prog[m.id];
+  video.onloadedmetadata=()=>{
+    if(remoteTime!=null&&remoteTime>0)video.currentTime=remoteTime;
+    else if(p&&p.t>10&&p.t<video.duration-15){video.currentTime=p.t;toast('Wahin se shuru jahan chhoda tha ▶')}
+  };
+  video.play().catch(()=>{});
+  startAmbient();wake();
+  if(Party.ch&&remoteTime==null)Party.send({t:'sync',id:m.id,time:0,paused:false});
+}
+function closePlayer(){
+  if(cur&&cur.id!=='local'&&video.duration)saveProg();
+  video.pause();video.removeAttribute('src');video.load();stopAmbient();clearTimeout(sleepT);sleepIdx=0;$('#bsleep').classList.remove('on');
+  $('#trailerBox').innerHTML='';$('#player').hidden=true;$('#player').classList.remove('trailer');document.body.style.overflow='';
+  if(document.fullscreenElement)document.exitFullscreen();
+  cur=null;if(state.view==='home')render();
+}
+function saveProg(){prog[cur.id]={t:video.currentTime,d:video.duration};store.set('prog',prog)}
+function wake(){const s=$('#stage');s.classList.remove('hideui');clearTimeout(idleT);idleT=setTimeout(()=>{if(!video.paused)s.classList.add('hideui')},2800)}
+$('#stage').addEventListener('mousemove',wake);$('#stage').addEventListener('touchstart',wake,{passive:true});
+const tp=()=>video.paused?video.play().catch(()=>{}):video.pause();
+const skip=s=>{video.currentTime=Math.max(0,Math.min(video.duration||0,video.currentTime+s))};
+let clickT;
+video.addEventListener('click',e=>{
+  clearTimeout(clickT);clickT=setTimeout(tp,230);
+});
+video.addEventListener('dblclick',e=>{
+  clearTimeout(clickT);const r=video.getBoundingClientRect(),x=(e.clientX-r.left)/r.width;
+  if(x<.33){skip(-10);toast('⏪ 10s')}else if(x>.66){skip(10);toast('10s ⏩')}else $('#bfs').click();
+});
+video.addEventListener('play',()=>{$('#bplay').textContent='⏸'});
+video.addEventListener('pause',()=>{$('#bplay').textContent='▶';wake()});
+video.addEventListener('timeupdate',()=>{
+  if(video.duration)$('#seek').value=video.currentTime/video.duration*1000;
+  $('#time').textContent=fmt(video.currentTime)+' / '+fmt(video.duration);
+  if(cur&&cur.id!=='local'&&Date.now()-lastSave>2500&&video.duration){lastSave=Date.now();saveProg()}
+});
+video.addEventListener('error',()=>{if(cur)toast('Video load nahi hua — src/URL check karo')});
+video.addEventListener('ended',()=>{if(cur&&prog[cur.id]){delete prog[cur.id];store.set('prog',prog)}toast('The End 🎬')});
+$('#seek').oninput=e=>{if(video.duration)video.currentTime=e.target.value/1000*video.duration};
+$('#bplay').onclick=tp;$('#bb').onclick=()=>skip(-10);$('#bf').onclick=()=>skip(10);
+$('#bmute').onclick=()=>{video.muted=!video.muted;$('#bmute').textContent=video.muted?'🔇':'🔊'};
+$('#vol').oninput=e=>{video.volume=+e.target.value;video.muted=false;$('#bmute').textContent='🔊'};
+$('#bspeed').onclick=()=>{spIdx=(spIdx+1)%SPEEDS.length;video.playbackRate=SPEEDS[spIdx];$('#bspeed').textContent=SPEEDS[spIdx]+'x'};
+$('#bamb').onclick=()=>{ambOn=!ambOn;$('#bamb').classList.toggle('on',ambOn);startAmbient()};
+$('#bsleep').onclick=()=>{
+  sleepIdx=(sleepIdx+1)%SLEEP.length;clearTimeout(sleepT);const mins=SLEEP[sleepIdx];
+  $('#bsleep').classList.toggle('on',!!mins);
+  if(mins){toast(`😴 ${mins} min baad video ruk jaayega`);sleepT=setTimeout(()=>{video.pause();toast('Sleep timer: shubh ratri 🌙')},mins*60000)}else toast('Sleep timer band');
+};
+$('#bpip').onclick=async()=>{try{document.pictureInPictureElement?await document.exitPictureInPicture():await video.requestPictureInPicture()}catch(e){toast('PiP support nahi hai')}};
+$('#bfs').onclick=()=>{document.fullscreenElement?document.exitFullscreen():$('#player').requestFullscreen&&$('#player').requestFullscreen()};
+$('#bchat').onclick=()=>{if(!Party.ch)return toast('Pehle Watch Party shuru karo 🎉');$('#chat').hidden=!$('#chat').hidden};
+$('#pclose').onclick=closePlayer;
+$('#bcc').onclick=()=>{
+  const t=video.textTracks[0];
+  if(!t)return $('#sf').click();
+  t.mode=t.mode==='showing'?'hidden':'showing';$('#bcc').classList.toggle('on',t.mode==='showing');
+};
+$('#sf').onchange=async e=>{
+  const f=e.target.files[0];if(!f)return;let txt=await f.text();
+  if(!/^WEBVTT/.test(txt.trim()))txt='WEBVTT\n\n'+txt.replace(/\r/g,'').replace(/(\d{2}:\d{2}:\d{2}),(\d{3})/g,'$1.$2');
+  $$('track',video).forEach(t=>t.remove());
+  const tr=document.createElement('track');tr.kind='subtitles';tr.label='Custom';tr.default=true;tr.src=URL.createObjectURL(new Blob([txt],{type:'text/vtt'}));
+  video.appendChild(tr);setTimeout(()=>{if(video.textTracks[0]){video.textTracks[0].mode='showing';$('#bcc').classList.add('on')}},200);
+  toast('Subtitles lag gaye ✅');e.target.value='';
+};
+$('#lf').onchange=e=>{
+  const f=e.target.files[0];if(!f)return;
+  openPlayer({id:'local',title:f.name,src:URL.createObjectURL(f),genres:[],moods:[],rating:0,desc:''});e.target.value='';
+};
+
+/* ---------- watch party ----------
+   Demo transport = BroadcastChannel (same browser ke tabs).
+   Alag devices ke liye: send() mein ws.send(JSON.stringify(...)) aur
+   ws.onmessage mein recv() call karo (Socket.io / WebSocket server). */
+const Party={ch:null,room:null,me:'u'+Math.random().toString(36).slice(2,8),name:'Dost'+(1000+Math.floor(Math.random()*9000)),lock:false,peers:new Set(),
+  join(code){this.leave();this.room=code;this.ch=new BroadcastChannel('cv-'+code);this.ch.onmessage=e=>this.recv(e.data);this.send({t:'hello'});$('#pparty').textContent='🎉 Party '+code;toast('Party '+code+' mein ho 🎉')},
+  leave(){if(this.ch)this.ch.close();this.ch=null;this.room=null;this.peers.clear();$('#pparty').textContent='';$('#chat').hidden=true},
+  send(m){if(this.ch)this.ch.postMessage({...m,from:this.me,name:this.name})},
+  recv(m){
+    if(m.from===this.me)return;
+    if(m.t==='hello'){this.peers.add(m.from);toast(m.name+' join hua 👋');this.send({t:'ack'});if(cur&&cur.src)this.send({t:'sync',id:cur.id,time:video.currentTime,paused:video.paused})}
+    else if(m.t==='ack')this.peers.add(m.from);
+    else if(m.t==='chat')addChat(m.name,m.text,false);
+    else if(m.t==='react')floatEmoji(m.e);
+    else if(m.t==='sync')applySync(m);
+  }};
+function applySync(m){
+  Party.lock=true;setTimeout(()=>Party.lock=false,600);
+  if(!cur||cur.id!==m.id){const mv=byId(m.id);if(mv){closeModal();openPlayer(mv,m.time||0.01)}return}
+  if(Math.abs(video.currentTime-m.time)>1.5)video.currentTime=m.time;
+  if(m.paused&&!video.paused)video.pause();else if(!m.paused&&video.paused)video.play().catch(()=>toast('Play dabao — browser autoplay rok raha hai'));
+}
+['play','pause','seeked'].forEach(ev=>video.addEventListener(ev,()=>{if(Party.ch&&!Party.lock&&cur)Party.send({t:'sync',id:cur.id,time:video.currentTime,paused:video.paused})}));
+function addChat(name,text,me){const d=document.createElement('div');if(me)d.className='me';d.innerHTML=`<b>${esc(name)}</b>${esc(text)}`;$('#msgs').appendChild(d);$('#msgs').scrollTop=1e9}
+function floatEmoji(e){const s=document.createElement('span');s.textContent=e;s.style.left=(8+Math.random()*80)+'%';$('#floats').appendChild(s);setTimeout(()=>s.remove(),2700)}
+$('#cf').onsubmit=e=>{e.preventDefault();const t=$('#ci').value.trim();if(!t)return;addChat('Tum',t,true);Party.send({t:'chat',text:t});$('#ci').value=''};
+function partyModal(){
+  modal(`<div class="dbody"><h2>🎉 Watch Party</h2><p class="mut">Dost ke saath ek hi time pe dekho — play/pause/seek sync, live chat aur reactions.</p>
+  ${Party.room?`<div class="code">${Party.room}</div><div class="hb"><button class="btn" data-act="copylink">🔗 Link copy karo</button><button class="btn" data-act="leaveparty">Party chhodo</button></div>`
+  :`<button class="btn pri" data-act="newparty">+ Nayi party banao</button><div class="join"><input id="pc" maxlength="4" placeholder="CODE"><button class="btn" data-act="joinparty">Join</button></div>`}
+  <p class="note">⚠ Demo mein sync ek hi browser ke tabs ke beech chalta hai. Alag-alag phones/laptops ke liye Party.send/recv ko WebSocket server se jod do.</p></div>`);
+}
+const newCode=()=>Array.from({length:4},()=>'ABCDEFGHJKMNPQRSTUVWXYZ23456789'[Math.floor(Math.random()*31)]).join('');
+
+/* ---------- settings ---------- */
+function settingsModal(){
+  modal(`<div class="dbody"><h2>⚙ Settings</h2>
+  <p class="mut" style="margin-top:12px">TMDB API key (free: themoviedb.org) — asli trending movies, search aur trailers ke liye.</p>
+  <div class="join"><input class="fld" id="tk" style="text-transform:none;letter-spacing:0;text-align:left;font-weight:400" placeholder="API key paste karo" value="${esc(store.get('tmdb',''))}"><button class="btn pri" data-act="savekey">Save</button></div>
+  <h3 style="margin:20px 0 8px">⌨ Shortcuts</h3>
+  <p class="mut"><kbd>/</kbd> search · <kbd>&gt;</kbd> commands · <kbd>Space</kbd> play/pause · <kbd>J</kbd>/<kbd>L</kbd> ±10s · <kbd>←</kbd>/<kbd>→</kbd> ±5s · <kbd>F</kbd> fullscreen · <kbd>M</kbd> mute · <kbd>C</kbd> subtitles · <kbd>A</kbd> ambient · <kbd>Esc</kbd> band</p>
+  <h3 style="margin:20px 0 8px">⚖ Content</h3>
+  <p class="mut">Sirf wahi videos chalao jinke rights tumhare paas hon (apne, licensed ya free/open content).</p></div>`);
+}
+
+/* ---------- actions & events ---------- */
+const acts={
+  roulette,party:partyModal,settings:settingsModal,local:()=>$('#lf').click(),closemodal:closeModal,chatclose:()=>$('#chat').hidden=true,
+  newparty:()=>{Party.join(newCode());partyModal()},
+  joinparty:()=>{const c=($('#pc').value||'').trim().toUpperCase();if(c.length!==4)return toast('4 letter ka code daalo');Party.join(c);partyModal()},
+  leaveparty:()=>{Party.leave();partyModal()},
+  copylink:()=>{const u=location.href.split('#')[0]+'#party='+Party.room;(navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(()=>toast('Link copy ho gaya'),()=>toast('Code: '+Party.room))},
+  savekey:()=>{store.set('tmdb',$('#tk').value.trim());closeModal();loadTMDB()}
+};
+document.addEventListener('click',e=>{
+  const t=e.target;let el;
+  if(!t.closest('.search'))$('#sugg').hidden=true;
+  if(el=t.closest('[data-play]')){play(el.dataset.play);return}
+  if(el=t.closest('[data-list]')){toggleList(el.dataset.list);return}
+  if(el=t.closest('[data-rate]')){const[id,n]=el.dataset.rate.split(':');ratings[id]=+n;store.set('rate',ratings);$$(`[data-rate^="${id}:"]`).forEach(b=>b.classList.toggle('on',+b.dataset.rate.split(':')[1]<=+n));return}
+  if(el=t.closest('[data-partyplay]')){if(!Party.room)Party.join(newCode());toast('Party code: '+Party.room);play(el.dataset.partyplay);return}
+  if(el=t.closest('[data-react]')){floatEmoji(el.dataset.react);Party.send({t:'react',e:el.dataset.react});return}
+  if(el=t.closest('[data-hero]')){heroShow(+el.dataset.hero);heroTimer();return}
+  if(el=t.closest('[data-cmd]')){const c=el.dataset.cmd;$('#q').value='';$('#sugg').hidden=true;(c==='home'||c==='mylist')?go(c):acts[c]();return}
+  if(el=t.closest('[data-fullsearch]')){state.query=$('#q').value;state.view='search';$('#sugg').hidden=true;render();scrollTo(0,0);return}
+  if(el=t.closest('[data-open]')){openDetail(el.dataset.open);return}
+  if(el=t.closest('[data-nav]')){e.preventDefault();go(el.dataset.nav);return}
+  if(el=t.closest('[data-act]')){acts[el.dataset.act]&&acts[el.dataset.act]();return}
+  if(t.id==='modal')closeModal();
+});
+document.addEventListener('keydown',e=>{
+  const typing=/INPUT|TEXTAREA/.test(document.activeElement.tagName);
+  if(e.key==='/'&&!typing&&$('#player').hidden){e.preventDefault();$('#q').focus();return}
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();$('#q').focus();$('#q').value='>';showSugg();return}
+  if(e.key==='Escape'){if(!$('#modal').hidden)closeModal();else if(!$('#player').hidden&&!document.fullscreenElement)closePlayer();return}
+  if($('#player').hidden||typing||!cur||!cur.src)return;
+  const k=e.key.toLowerCase();wake();
+  if(k===' '||k==='k'){e.preventDefault();tp()}
+  else if(k==='j')skip(-10);else if(k==='l')skip(10);
+  else if(e.key==='ArrowLeft')skip(-5);else if(e.key==='ArrowRight')skip(5);
+  else if(k==='f')$('#bfs').click();else if(k==='m')$('#bmute').click();
+  else if(k==='c')$('#bcc').click();else if(k==='a')$('#bamb').click();
+});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.classList&&e.target.classList.contains('card'))openDetail(e.target.dataset.open)});
+
+/* mood chips + time slider */
+$('#moods').innerHTML=MOODS.map(([k,l])=>`<button class="chip" data-mood="${k}">${l}</button>`).join('');
+$('#moods').addEventListener('click',e=>{const b=e.target.closest('[data-mood]');if(!b)return;state.mood=state.mood===b.dataset.mood?null:b.dataset.mood;$$('#moods .chip').forEach(c=>c.classList.toggle('on',c.dataset.mood===state.mood));render()});
+$('#tr').oninput=e=>{state.maxTime=+e.target.value;$('#tl').textContent=state.maxTime>=180?'Koi time limit nahi':`${state.maxTime} min tak`;render()};
+
+/* init */
+heroShow(0);heroTimer();render();
+if(store.get('tmdb',''))loadTMDB();
+if(location.hash.startsWith('#party='))Party.join(location.hash.slice(7,11).toUpperCase());
+</script>
+</body>
+</html>
